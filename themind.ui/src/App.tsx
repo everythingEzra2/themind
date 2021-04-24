@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import logo from './logo.svg';
 import './App.css';
 import * as signalR from "@microsoft/signalr";
+import { Card } from './components';
+import {} from './hooks';
 
 function App() {
 
@@ -14,7 +16,7 @@ function App() {
 	// Starts the SignalR connection
 	hubConnection.start().then(a => {
 		console.log("connect");
-	// Once started, invokes the sendConnectionId in our ChatHub inside our ASP.NET Core application.
+		// Once started, invokes the sendConnectionId in our ChatHub inside our ASP.NET Core application.
 		if (hubConnection.connectionId) {
 			hubConnection.invoke("sendConnectionId", hubConnection.connectionId);
 		}   
@@ -46,35 +48,16 @@ function App() {
 		return <p>{clientMessage}</p>
 	};
 
-
 	return (
 		<>
 			<SignalRTime />
 			<SignalRClient />
+
+			<div className="App bg-gray-800 h-full">
+			<Card id="GUID" value={5} x={10} y={30} />
+			</div>
 		</>
 	);
-
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-// 		<button>
-// 			CONNECT
-// 		</button>
-//       </header>
-//     </div>
-//   );
 }
 
 export default App;
