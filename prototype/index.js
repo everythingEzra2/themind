@@ -1,12 +1,11 @@
+require('dotenv').config();
 const path = require('path'),
-port = process.env.PORT
 express = require('express'),
-path = require('path'),
 app = express(),
 server = require('http').Server(app),
 io = require('socket.io')(server),
-bodyParser = require('body-parser');
-require('dotenv').config();
+bodyParser = require('body-parser'),
+port = process.env.PORT;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
