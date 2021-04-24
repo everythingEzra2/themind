@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using themind.api.Hubs;
 
 namespace themind.api
 {
@@ -26,6 +28,7 @@ namespace themind.api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+			services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +41,14 @@ namespace themind.api
 
             app.UseHttpsRedirection();
 
+			app.UseCors(builder =>
+			{
+				builder.AllowAnyHeader()
+					.AllowAnyMethod()
+					.SetIsOriginAllowed((host) => true)
+					.AllowCredentials();
+			});
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -45,6 +56,7 @@ namespace themind.api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+				endpoints.MapHub<GameHub>("/gameHub");
             });
         }
     }
