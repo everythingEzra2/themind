@@ -1,6 +1,6 @@
 import { ScreenSize, useScreenSize } from './useScreenSize';
 
-interface Coordinates {
+export interface Coordinates {
   x: number;
   y: number;
 }
