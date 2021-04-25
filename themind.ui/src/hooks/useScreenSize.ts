@@ -5,7 +5,7 @@ export interface ScreenSize {
   height: number;
 }
 
-export function useScreenSize(): ScreenSize {
+export const useScreenSize = (): ScreenSize => {
   const [screenSize, setScreenSize] = useState<ScreenSize>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -23,6 +23,6 @@ export function useScreenSize(): ScreenSize {
   }, []);
 
   return screenSize;
-}
+};
 
 export default useScreenSize;

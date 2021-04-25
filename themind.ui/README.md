@@ -13,7 +13,6 @@
       "cards": [{ "id": 1, "value": 15, "x": 10, "y": 10 }]
     }
   ],
-  "positionMatrix": [[], []],
   "metadata": {
     "lives": 4,
     "ninjastars": 2

@@ -1,66 +1,64 @@
-import { useSpring, animated } from 'react-spring';
+import { useContext, useRef, forwardRef } from 'react';
 import { useDrag } from 'react-use-gesture';
 import styled from '@emotion/styled';
 import tw from 'twin.macro';
-import { GameHub } from '../../hub/gamehub';
-import { useScreenCoordinates } from '../../hooks';
+import {
+  toWorldPosition,
+  useResizeObserver,
+  useScreenOrigin,
+  useScreenPosition,
+} from '../../hooks';
+import { GameContext } from '../../context';
+import { ActionType, Position } from '../../models';
 
-const CardElement = styled(animated.div)`
-  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-red-800 border-8 cursor-move`}
+const CardElement = styled.div<{ position: Position }>`
+  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-blue-700 border-8 cursor-move`}
 
-  max-width: 8rem;
-  min-height: 10rem;
+  width: 8rem;
+  height: 10rem;
   touch-action: none;
   user-select: none;
 
-  position: relative;
+  left: ${({ position: [x] }) => x}px;
+  top: ${({ position: [, y] }) => y}px;
+
+  position: absolute;
 `;
 
-export interface CardModel {
-  id: string;
+interface CardProps {
   value: number;
-  x: number;
-  y: number;
+  position: Position;
 }
 
-type CardProps = CardModel & {
-  onMove?: (id: string, screenX: number, screenY: number) => void;
-  onPlace?: (id: string, screenX: number, screenY: number) => void;
-};
+export function PlayableCard({ value, ...props }: CardProps) {
+  const { invoke } = useContext(GameContext);
+  const playOrigin = useScreenOrigin();
+  const cardRef = useRef<HTMLDivElement>(null);
 
-export function Card({
-  onMove,
-  onPlace,
-  id,
-  value,
-  x: _worldX,
-  y: _worldY,
-}: CardProps) {
-  const { x: _x, y: _y } = useScreenCoordinates(_worldX, _worldY);
-
-  const gameHub = GameHub.getInstance();
-  gameHub.HubConnection.on('setClientMessage', (message: any) => {
-    console.log('from card.tsx: ', message);
-    gameHub.CardMovement('1', 3, 7);
-  });
-
-  const [{ x, y }, set] = useSpring(() => ({ x: _x, y: _y }));
   const bind = useDrag(({ xy: [x, y], down }) => {
-    if (!down) {
-      onPlace?.(id, x, y);
-    } else {
-      onMove?.(id, x, y);
-      gameHub.CardMovement(id, x, y);
-    }
-
-    set({ x, y });
+    const { width, height } = cardRef.current!.getBoundingClientRect();
+    invoke({
+      action: down ? ActionType.MoveCard : ActionType.PlaceCard,
+      payload: {
+        value,
+        position: toWorldPosition([x - width / 2, y - height / 2], playOrigin),
+      },
+    });
   });
 
-  return (
-    <CardElement {...bind()} style={{ x, y }}>
-      {value}
-    </CardElement>
-  );
+  return <Card value={value} {...props} {...bind()} ref={cardRef} />;
 }
+
+export const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ value, position: [_worldX, _worldY], ...rest }: CardProps, ref) => {
+    const position = useScreenPosition(_worldX, _worldY);
+
+    return (
+      <CardElement position={position} {...rest} ref={ref}>
+        {value}
+      </CardElement>
+    );
+  }
+);
 
 export default Card;
