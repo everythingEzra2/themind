@@ -12,7 +12,9 @@ import { GameContext } from '../../context';
 import { ActionType, Position } from '../../models';
 
 const CardElement = styled.div<{ position: Position }>`
-  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-blue-700 border-8 cursor-move`}
+  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-blue-700 border-8 cursor-move transition-transform transform active:scale-125`}
+
+  transition: transform 0.1s ease-out;
 
   width: 8rem;
   height: 10rem;
