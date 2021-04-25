@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import tw from 'twin.macro';
+import {GameHub} from '../../hub/gamehub';
 
 const CardElement = styled.div<{ x: number; y: number }>`
   ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-red-800 border-8 cursor-move`}
@@ -26,6 +27,13 @@ type CardProps = CardModel & {
 };
 
 export function Card({ onStartMove, onPlace, ...card }: CardProps) {
+
+	var gameHub = GameHub.getInstance();
+gameHub.HubConnection.on("setClientMessage", (message:any) => {
+  console.log("from card.tsx: ", message);
+  gameHub.CardMovement("1", 3, 7);
+});
+
   return (
     <CardElement
       {...card}
