@@ -1,5 +1,6 @@
 import { HubConnectionState } from '@microsoft/signalr';
 import { Context, createContext, ReactNode, useReducer } from 'react';
+import { Loader } from '../components';
 import { useGameConnection, useGameStateChange } from '../hooks';
 import { Action, ActionType, Player, Game as State } from '../models';
 
@@ -131,7 +132,11 @@ export const Game = ({
   useGameStateChange((change) => dispatch({ payload: change }));
 
   if (hubConnectionState !== HubConnectionState.Connected) {
-    return <div>Loading</div>;
+    return (
+      <div className="flex justify-center items-center h-full w-full bg-blue-800">
+        <Loader>💫</Loader>
+      </div>
+    );
   }
 
   if (error) {

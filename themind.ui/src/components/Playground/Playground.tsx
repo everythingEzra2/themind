@@ -2,24 +2,24 @@ import { useContext, useState } from 'react';
 import { Card, PlayableCard } from '../../components';
 import { GameContext } from '../../context';
 import { useHandDown } from '../../hooks';
+import { Button } from '../Button';
 
 function Playground() {
-  const [isHandDown, setIsHandDown] = useState(false);
-
   const { game, player } = useContext(GameContext);
 
+  const [isHandDown, setIsHandDown] = useState(false);
   const bindHandDown = useHandDown(
     () => setIsHandDown(true),
     () => setIsHandDown(false)
   );
 
-  if (!game || !player) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="App bg-gray-800 h-full transform" {...bindHandDown()}>
-      <div className="text-8xl absolute transform rotate-180 -scale-x-1">
+    <div
+      className="bg-gray-800 h-full transform overflow-hidden relative"
+      {...bindHandDown()}
+    >
+      <Button className="absolute m-3 fade-in">Use ✨</Button>
+      <div className="text-8xl absolute transform rotate-180 -scale-x-1 bottom-0 m-10">
         {isHandDown ? '✋' : ''}
       </div>
       {Object.entries(player.cards).map(([value, position]) => (
