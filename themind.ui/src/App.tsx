@@ -1,32 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import * as signalR from '@microsoft/signalr';
-import { Card, CardModel } from './components';
+import { Card } from './components';
+
+import { useHandDown } from './hooks';
 
 const cards = {
-  1: { id: '1', value: 2, x: 30, y: 50 },
+  1: { id: '1', value: 2, x: 0.3, y: 0.5 },
 };
 
 function App() {
-  const [currentCard, setCurrentCard] = useState<CardModel>();
-
-  useEffect(() => {
-    if (!currentCard) {
-      return;
-    }
-
-    const setPosition = (e: MouseEvent) =>
-      setCurrentCard({ ...currentCard, x: e.screenX, y: e.screenY });
-
-    document.addEventListener('mousemove', setPosition);
-
-    return () => document.removeEventListener('mousemove', setPosition);
-  }, [currentCard]);
-
   // Builds the SignalR connection, mapping it to /chat
   const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl('https://localhost:5001/gameHub')
     .configureLogging(signalR.LogLevel.Information)
     .build();
+
+  const [isHandDown, setIsHandDown] = useState(false);
+
+  const bind = useHandDown(
+    () => {
+      console.log('e');
+      setIsHandDown(true);
+    },
+    () => setIsHandDown(false)
+  );
 
   // Starts the SignalR connection
   hubConnection.start().then((a) => {
@@ -36,19 +33,6 @@ function App() {
       hubConnection.invoke('sendConnectionId', hubConnection.connectionId);
     }
   });
-
-  const SignalRTime: React.FC = () => {
-    // Sets the time from the server
-    const [time, setTime] = useState<string | null>(null);
-
-    useEffect(() => {
-      hubConnection.on('setTime', (message) => {
-        setTime(message);
-      });
-    });
-
-    return <p>The time is {time}</p>;
-  };
 
   const SignalRClient: React.FC = () => {
     // Sets a client message, sent from the server
@@ -65,16 +49,18 @@ function App() {
 
   return (
     <>
-      <SignalRTime />
       <SignalRClient />
 
-      <div className="App bg-gray-800 h-full">
+      <div className="App bg-gray-800 h-full transform" {...bind()}>
+        <div className="text-8xl absolute transform rotate-180 -scale-x-1">
+          {isHandDown ? '✋' : ''}
+        </div>
         {Object.values(cards).map((card) => (
           <Card
+            key={card.id}
             {...card}
-            x={card.id === currentCard?.id ? currentCard.x : card.x}
-            y={card.id === currentCard?.id ? currentCard.y : card.y}
-            onStartMove={(id, x, y) => setCurrentCard({ ...card, x, y })}
+            onMove={() => console.log('move')}
+            onPlace={() => console.log('place')}
           />
         ))}
       </div>

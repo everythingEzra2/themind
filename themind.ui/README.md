@@ -29,7 +29,7 @@ const ACTIONS = [
   "CHANGE_CARD_POSITION": { "id": 1, "x": 1, "y": 1 },
   "PLAYER_HAND_UP_START": { "id": 1, "x": 1, "y": 1 },
   "PLAYER_HAND_UP_END": { "id": 1, "x": 1, "y": 1 },
-  "PLAYER_READY_START": { "id": 1, "x": 1, "y": 1 },
-  "PLAYER_READY_END": { "id": 1, "x": 1, "y": 1 }
+  "PLAYER_HAND_DOWN_START": { "id": 1, "x": 1, "y": 1 },
+  "PLAYER_HAND_DOWN_END": { "id": 1, "x": 1, "y": 1 }
 ]
 ```
