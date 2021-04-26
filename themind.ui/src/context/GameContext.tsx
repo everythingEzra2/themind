@@ -98,9 +98,21 @@ const gameState: State = {
   players: {
     '1': {
       id: '1',
-      name: 'Jesse ',
+      name: 'Jesse',
       action: ActionType.Idle,
-      cards: { 1: [0.5, 0.5] },
+      cards: {
+        1: [-0.5, -0.5],
+        15: [-0.25, -0.5],
+        32: [0, -0.5],
+        87: [0.25, -0.5],
+      },
+      position: [1, 1],
+    },
+    '2': {
+      id: '2',
+      name: 'Audrey',
+      action: ActionType.Idle,
+      cards: { 13: [0.9, -0.5], 19: [0.9, -0.2] },
       position: [1, 1],
     },
   },
@@ -133,7 +145,7 @@ export const Game = ({
 
   if (hubConnectionState !== HubConnectionState.Connected) {
     return (
-      <div className="flex justify-center items-center h-full w-full bg-blue-800">
+      <div className="flex justify-center items-center h-full w-full bg-green-200">
         <Loader>💫</Loader>
       </div>
     );

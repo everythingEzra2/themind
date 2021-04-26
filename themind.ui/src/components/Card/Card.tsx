@@ -4,7 +4,6 @@ import styled from '@emotion/styled';
 import tw from 'twin.macro';
 import {
   toWorldPosition,
-  useResizeObserver,
   useScreenOrigin,
   useScreenPosition,
 } from '../../hooks';
@@ -12,17 +11,21 @@ import { GameContext } from '../../context';
 import { ActionType, Position } from '../../models';
 
 const CardElement = styled.div<{ position: Position }>`
-  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-8xl border-blue-700 border-8 cursor-move transition-transform transform active:scale-125`}
+  ${tw`bg-gray-100 rounded-lg flex justify-center items-center font-black text-6xl border-yellow-500 border-8 cursor-move transition-transform transform active:scale-125`}
 
-  transition: transform 0.1s ease-out;
+  transition: transform box-shadow 0.1s ease-out;
+
+  :active {
+    box-shadow: 0px 20px 18px 8px rgba(0, 0, 0, 0.51);
+  }
 
   width: 8rem;
   height: 10rem;
   touch-action: none;
   user-select: none;
 
-  left: ${({ position: [x] }) => x}px;
-  top: ${({ position: [, y] }) => y}px;
+  left: ${({ position: [x] }) => x + 32}px;
+  top: ${({ position: [, y] }) => y + 30}px;
 
   position: absolute;
 `;
@@ -30,9 +33,10 @@ const CardElement = styled.div<{ position: Position }>`
 interface CardProps {
   value: number;
   position: Position;
+  isVisible?: boolean;
 }
 
-export function PlayableCard({ value, ...props }: CardProps) {
+export function PlayableCard({ value, isVisible = true, ...props }: CardProps) {
   const { invoke } = useContext(GameContext);
   const playOrigin = useScreenOrigin();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -48,16 +52,21 @@ export function PlayableCard({ value, ...props }: CardProps) {
     });
   });
 
-  return <Card value={value} {...props} {...bind()} ref={cardRef} />;
+  return (
+    <Card value={value} {...props} {...bind()} ref={cardRef} isVisible={true} />
+  );
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ value, position: [_worldX, _worldY], ...rest }: CardProps, ref) => {
+  (
+    { value, position: [_worldX, _worldY], isVisible, ...rest }: CardProps,
+    ref
+  ) => {
     const position = useScreenPosition(_worldX, _worldY);
 
     return (
       <CardElement position={position} {...rest} ref={ref}>
-        {value}
+        {isVisible ? value : null}
       </CardElement>
     );
   }

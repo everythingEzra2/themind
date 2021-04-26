@@ -16,10 +16,10 @@ function Playground() {
 
   return (
     <div
-      className="bg-gray-800 h-full transform overflow-hidden relative flex"
+      className="bg-green-600 h-full transform overflow-hidden relative flex"
       {...bindHandDown()}
     >
-      <Button className="absolute m-3 fade-in">Use ✨</Button>
+      <Button className="absolute m-3 fade-in">Use Ninja Star ✨</Button>
       <div className="text-8xl absolute transform rotate-180 -scale-x-1 bottom-0 m-10">
         {isHandDown ? '✋' : ''}
       </div>
